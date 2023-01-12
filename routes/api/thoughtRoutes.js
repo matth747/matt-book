@@ -7,7 +7,7 @@ const {
   updateThought,
   deleteThought,
   addReaction,
-  removeReaction
+  removeReaction  //needs work
 } = require('../../controllers/thoughtController');
 
 // /api/thoughts

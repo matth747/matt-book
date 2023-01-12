@@ -38,10 +38,40 @@ module.exports = {
       });
   },
   updateThought(req, res) {
-    User.findOneAndUpdate()
+    Thought.findOneAndUpdate(
+      { _id: req.params.thoughtId },
+      { $set: req.body },
+      { runValidators: true, new: true }
+    )
+      .then((application) =>
+        !application
+          ? res.status(404).json({ message: 'No application with this id!' })
+          : res.json(application)
+      )
+      .catch((err) => {
+        console.log(err);
+        res.status(500).json(err);
+      });
   },
   deleteThought(req, res) {
-    User.findOneAndDelete()
+    Thought.findOneAndRemove({ _id: req.params.thoughtId })
+      .then((thought) =>
+        !thought
+          ? res.status(404).json({ message: 'No thought with this id!' })
+          : User.findOneAndUpdate(
+              { thoughts: req.params.thoughtId },
+              { $pull: { thoughts: req.params.thoughtId } },
+              { new: true }
+            )
+      )
+      .then((user) =>
+        !user
+          ? res.status(404).json({
+              message: 'error',
+            })
+          : res.json({ message: 'Application successfully deleted!' })
+      )
+      .catch((err) => res.status(500).json(err));
   },
 
 
