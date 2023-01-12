@@ -2,12 +2,12 @@ const { Thought, User } = require('../models');
 
 module.exports = {
   getThoughts(req, res) {
-    Post.find()
+    Thought.find()
       .then((thought) => res.json(thought))
       .catch((err) => res.status(500).json(err));
   },
   getSingleThought(req, res) {
-    Post.findOne({ _id: req.params.thoughtId })
+    Thought.findOne({ _id: req.params.thoughtId })
       .then((thought) =>
         !thought
           ? res.status(404).json({ message: 'No thought with that ID' })
@@ -17,7 +17,7 @@ module.exports = {
   },
   // create a new post
   createThought(req, res) {
-    Post.create(req.body)
+    Thought.create(req.body)
       .then((thought) => {
         return User.findOneAndUpdate(
           { _id: req.body.userId },
@@ -61,9 +61,9 @@ addReaction(req, res) {
 },
 // Remove application tag. This method finds the application based on ID. It then updates the tags array associated with the app in question by removing it's tagId from the tags array.
 removeReaction(req, res) {
-  Application.findOneAndUpdate(
+  Thought.findOneAndUpdate(
     { _id: req.params.thoughtId },
-    { $pull: { tags: { reactionId: req.params.reactionId } } },
+    { $pull: { reactions: { reactionId: req.params.reactionId } } },
     { runValidators: true, new: true }
   )
     .then((thought) =>
