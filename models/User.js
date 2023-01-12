@@ -1,7 +1,16 @@
 const { Schema, model } = require('mongoose');
 
+
 const userSchema = new Schema (
     {
+        thoughts: [
+            {
+                type: Schema.Types.ObjectId,
+                ref: 'thought'
+            }
+        ],
+//        friends: [Friend],
+
         username: {
             type: String,
             unique: true,
@@ -14,21 +23,19 @@ const userSchema = new Schema (
             required: true,
             //need to add mongoose email validator
         },
-        thoughts: [
-            {
-                type: Schema.Types.ObjectId,
-                ref: 'thought'
-            }
-        ],
-/*         friends: [
-            {
-                type: Schema.Types.ObjectId,
-                ref: 'Friend?'
-            }
-        ] */
-        
-    }
-)
-const User = model('user', userSchema)
+    
+    },
+    {
+        toJSON: {
+            virtuals: true,
+        },
+        id: false,
+    })
 
-module.exports = User;
+    userSchema.virtual('friendCount').get(function () {
+        return this.friends.length
+    })
+    const User = model('user', userSchema)
+    
+    module.exports = User;
+    

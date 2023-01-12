@@ -1,27 +1,27 @@
-const { Post, User } = require('../models');
+const { Thought, User } = require('../models');
 
 module.exports = {
-  getPosts(req, res) {
+  getThoughts(req, res) {
     Post.find()
-      .then((posts) => res.json(posts))
+      .then((thought) => res.json(thought))
       .catch((err) => res.status(500).json(err));
   },
-  getSinglePost(req, res) {
-    Post.findOne({ _id: req.params.postId })
-      .then((post) =>
-        !post
-          ? res.status(404).json({ message: 'No post with that ID' })
-          : res.json(post)
+  getSingleThought(req, res) {
+    Post.findOne({ _id: req.params.thoughtId })
+      .then((thought) =>
+        !thought
+          ? res.status(404).json({ message: 'No thought with that ID' })
+          : res.json(thought)
       )
       .catch((err) => res.status(500).json(err));
   },
   // create a new post
-  createPost(req, res) {
+  createThought(req, res) {
     Post.create(req.body)
-      .then((post) => {
+      .then((thought) => {
         return User.findOneAndUpdate(
           { _id: req.body.userId },
-          { $addToSet: { posts: post._id } },
+          { $addToSet: { thoughts: thought._id } },
           { new: true }
         );
       })
@@ -37,4 +37,41 @@ module.exports = {
         res.status(500).json(err);
       });
   },
+  updateThought(req, res) {
+    User.findOneAndUpdate()
+  },
+  deleteThought(req, res) {
+    User.findOneAndDelete()
+  },
+
+
+
+addReaction(req, res) {
+  Thought.findOneAndUpdate(
+    { _id: req.params.thoughtId },
+    { $addToSet: { reactions: req.body } },
+    { runValidators: true, new: true }
+  )
+    .then((thought) =>
+      !thought
+        ? res.status(404).json({ message: 'No thought with this id!' })
+        : res.json(thought)
+    )
+    .catch((err) => res.status(500).json(err));
+},
+// Remove application tag. This method finds the application based on ID. It then updates the tags array associated with the app in question by removing it's tagId from the tags array.
+removeReaction(req, res) {
+  Application.findOneAndUpdate(
+    { _id: req.params.thoughtId },
+    { $pull: { tags: { reactionId: req.params.reactionId } } },
+    { runValidators: true, new: true }
+  )
+    .then((thought) =>
+      !thought
+        ? res.status(404).json({ message: 'No thought with this id!' })
+        : res.json(thought)
+    )
+    .catch((err) => res.status(500).json(err));
+},
+
 };
