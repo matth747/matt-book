@@ -8,7 +8,7 @@ const userSchema = new Schema (
                 ref: 'thought'
             }
         ],
-        friends: [Friend],
+        friends: [],
         username: {
             type: String,
             unique: true,
