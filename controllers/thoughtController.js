@@ -43,10 +43,10 @@ module.exports = {
       { $set: req.body },
       { runValidators: true, new: true }
     )
-      .then((application) =>
+      .then((thought) =>
         !application
-          ? res.status(404).json({ message: 'No application with this id!' })
-          : res.json(application)
+          ? res.status(404).json({ message: 'No thought with this id!' })
+          : res.json(thought)
       )
       .catch((err) => {
         console.log(err);
@@ -69,7 +69,7 @@ module.exports = {
           ? res.status(404).json({
               message: 'error',
             })
-          : res.json({ message: 'Application successfully deleted!' })
+          : res.json({ message: 'Thought successfully deleted!' })
       )
       .catch((err) => res.status(500).json(err));
   },
